@@ -2,7 +2,7 @@ name: Build and Push to ECR
 
 on:
   push:
-    branches: [main] # or your working branch
+    branches: [master] # or your working branch
 
 jobs:
   build-and-push:
