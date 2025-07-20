@@ -14,6 +14,6 @@ output "ses_verified_email" {
   value = aws_ses_email_identity.iot_sender.email
 }
 
-# output "beanstalk_env_url" {
-#   value = aws_elastic_beanstalk_environment.iot_env.endpoint_url
-# }
+output "beanstalk_app_url" {
+  value = aws_elastic_beanstalk_environment.iot_env.endpoint_url
+}

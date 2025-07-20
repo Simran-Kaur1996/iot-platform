@@ -3,25 +3,23 @@
   "containerDefinitions": [
     {
       "name": "iot-backend",
-      "image": "simran31/iot-backend:latest",
+      "image": "121955270316.dkr.ecr.us-east-1.amazonaws.com/iot-backend",
       "essential": true,
       "memory": 512,
       "portMappings": [
         {
-          "containerPort": 5000,
-          "hostPort": 5000
+          "containerPort": 5000
         }
       ]
     },
     {
       "name": "iot-frontend",
-      "image": "simran31/iot-frontend:latest",
+      "image": "121955270316.dkr.ecr.us-east-1.amazonaws.com/iot-frontend",
       "essential": true,
       "memory": 512,
       "portMappings": [
         {
-          "containerPort": 3000,
-          "hostPort": 3000
+          "containerPort": 3000
         }
       ]
     }

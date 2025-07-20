@@ -1,11 +1,11 @@
-name: Build and Push to ECR
+name: Build, Push to ECR & Deploy to Elastic Beanstalk
 
 on:
   push:
-    branches: [master] # or your working branch
+    branches: [master] # change if needed
 
 jobs:
-  build-and-push:
+  build-push-deploy:
     runs-on: ubuntu-latest
 
     env:
@@ -13,6 +13,8 @@ jobs:
       ECR_ACCOUNT_ID: 121955270316
       BACKEND_REPO: iot-backend
       FRONTEND_REPO: iot-frontend
+      S3_BUCKET: iot-platform-deployments
+      ZIP_FILE: iot-platform-deploy.zip
 
     steps:
       - name: ⬇️ Checkout code
@@ -46,3 +48,51 @@ jobs:
       - name: 🚀 Push frontend to ECR
         run: |
           docker push $ECR_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$FRONTEND_REPO:latest
+
+      - name: 📦 Create Dockerrun.aws.json
+        run: |
+          cat > backend/Dockerrun.aws.json <<EOF
+          {
+            "AWSEBDockerrunVersion": 2,
+            "containerDefinitions": [
+              {
+                "name": "iot-backend",
+                "image": "${ECR_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${BACKEND_REPO}:latest",
+                "essential": true,
+                "memory": 512,
+                "portMappings": [
+                  {
+                    "containerPort": 5000
+                  }
+                ]
+              },
+              {
+                "name": "iot-frontend",
+                "image": "${ECR_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${FRONTEND_REPO}:latest",
+                "essential": true,
+                "memory": 512,
+                "portMappings": [
+                  {
+                    "containerPort": 3000
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+
+      - name: 🗜 Zip Dockerrun.aws.json
+        run: |
+          cd backend
+          zip $ZIP_FILE Dockerrun.aws.json
+          cd ..
+
+      - name: ☁️ Upload to S3
+        run: |
+          aws s3 cp backend/$ZIP_FILE s3://$S3_BUCKET/$ZIP_FILE
+
+      - name: ☁️ Deploy via Terraform
+        run: |
+          cd backend
+          terraform init
+          terraform apply -auto-approve
