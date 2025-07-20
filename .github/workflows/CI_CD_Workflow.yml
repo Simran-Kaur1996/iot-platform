@@ -1,0 +1,48 @@
+name: Build and Push to ECR
+
+on:
+  push:
+    branches: [main] # or your working branch
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_REGION: us-east-1
+      ECR_ACCOUNT_ID: 121955270316
+      BACKEND_REPO: iot-backend
+      FRONTEND_REPO: iot-frontend
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔐 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: 🔓 Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+      - name: 🐳 Build backend Docker image
+        run: |
+          docker build -t $BACKEND_REPO ./backend
+          docker tag $BACKEND_REPO:latest $ECR_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$BACKEND_REPO:latest
+
+      - name: 🐳 Build frontend Docker image
+        run: |
+          docker build -t $FRONTEND_REPO ./frontend
+          docker tag $FRONTEND_REPO:latest $ECR_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$FRONTEND_REPO:latest
+
+      - name: 🚀 Push backend to ECR
+        run: |
+          docker push $ECR_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$BACKEND_REPO:latest
+
+      - name: 🚀 Push frontend to ECR
+        run: |
+          docker push $ECR_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$FRONTEND_REPO:latest
