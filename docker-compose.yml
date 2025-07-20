@@ -1,24 +1,52 @@
-version: '3.9'
+name: Deploy Docker to ECR and Elastic Beanstalk
 
-services:
-  backend:
-    build:
-      context: ./backend
-    ports:
-      - '5000:5000'
-    env_file:
-      - ./backend/.env
-    restart: always
+on:
+  push:
+    branches:
+      - main
 
-  frontend:
-    build:
-      context: ./frontend
-      args:
-        REACT_APP_API_URL: http://localhost:5000/api
-        REACT_APP_COGNITO_CLIENT_ID: your-client-id
-        REACT_APP_COGNITO_USER_POOL_ID: your-userpool-id
-    ports:
-      - '3000:80'
-    depends_on:
-      - backend
-    restart: always
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: iot-frontend
+  IMAGE_TAG: latest
+  EB_APPLICATION: iot-app
+  EB_ENVIRONMENT: iot-env
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin <aws_account_id>.dkr.ecr.$AWS_REGION.amazonaws.com
+
+      - name: Build Docker image
+        run: |
+          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
+
+      - name: Tag image for ECR
+        run: |
+          docker tag $ECR_REPOSITORY:$IMAGE_TAG <aws_account_id>.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Push image to ECR
+        run: |
+          docker push <aws_account_id>.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          aws elasticbeanstalk update-environment \
+            --environment-name $EB_ENVIRONMENT \
+            --version-label "v-${{ github.run_number }}" \
+            --application-name $EB_APPLICATION \
+            --option-settings file://.ebextensions/options.json || echo "Trigger manual update"

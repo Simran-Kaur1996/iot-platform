@@ -11,3 +11,13 @@ variable "alert_email" {
   description = "Email to receive SNS alerts"
   type        = string
 }
+
+
+variable "backend_repo" {
+  default = "iot-backend"
+}
+
+variable "frontend_repo" {
+  default = "iot-frontend"
+}
+
