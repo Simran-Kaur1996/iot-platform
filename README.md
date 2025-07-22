@@ -24,7 +24,7 @@
 > 🔐 Cognito-secured dashboard  
 > 📩 Live alerts via email (SES) and SMS (SNS)
 
-🔗 Coming Soon | 📸 [View screenshots »](./screenshots)
+📸 [View screenshots »](./screenshots)
 
 ---
 
