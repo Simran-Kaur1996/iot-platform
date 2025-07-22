@@ -45,7 +45,7 @@
 ## 🖼️ Architecture Diagram
 
 <p align="center">
-  <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-097c-61f7-ac87-9ef2aad295f8/raw?se=2025-07-22T19%3A12%3A36Z&sp=r&sv=2024-08-04&sr=b&scid=13997fdf-eae5-5a81-9d37-4a12c5816152&skoid=71e8fa5c-90a9-4c17-827b-14c3005164d6&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-07-21T23%3A21%3A10Z&ske=2025-07-22T23%3A21%3A10Z&sks=b&skv=2024-08-04&sig=sxd/QZCshxg1SUVXJLaCQCRgWc6cCZltRqjyDzpWWnM%3D" width="550" alt="IoT Platform Architecture">
+  <img src="./screenshots/architecture.png" width="550" alt="IoT Platform Architecture">
 </p>
 
 ---
