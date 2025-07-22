@@ -24,7 +24,7 @@
 > 🔐 Cognito-secured dashboard  
 > 📩 Live alerts via email (SES) and SMS (SNS)
 
-🔗 Coming Soon | 📸 [View screenshots »](./screenshots)
+🔗 Coming Soon | 📸 [View screenshots »](./screenshot)
 
 ---
 
@@ -45,7 +45,7 @@
 ## 🖼️ Architecture Diagram
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Simran-Kaur1996/iot-platform/main/screenshots/iot-architecture.png" width="850" alt="IoT Platform Architecture">
+  <img src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-9cdc-61f7-b8c9-05e218425212/raw?se=2025-07-22T19%3A09%3A42Z&sp=r&sv=2024-08-04&sr=b&scid=0c41af26-a326-5516-bf1c-676d0f7022b4&skoid=71e8fa5c-90a9-4c17-827b-14c3005164d6&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-07-22T10%3A14%3A02Z&ske=2025-07-23T10%3A14%3A02Z&sks=b&skv=2024-08-04&sig=gkJXNXJTgGrBZ%2BnhsdhIIhHuhZNla4/ugLuYP6zPNIo%3D" width="850" alt="IoT Platform Architecture">
 </p>
 
 ---
